@@ -13,7 +13,7 @@
           <h3>{{dish.name | uppercase}}</h3>
         </mat-card-title>
       </mat-card-header>
-      <img mat-card-image src="{{dish.image}}" alt="{{dish.name}}">
+      <img mat-card-image src="{{BaseURL + dish.image}}" alt="{{dish.name}}">
       <mat-card-content>
         <p>{{dish.description}}</p>
       </mat-card-content>
@@ -41,9 +41,9 @@
           <p matLine> -- {{comment.author}} {{comment.date | date}}</p>       
       </mat-list-item>
       <mat-list-item *ngIf="commentForm.valid">
-          <h4 matLine> {{commentForm.get('comment').value}} </h4>
-          <p matLine> {{commentForm.get('rating').value}} Starts</p>     
-          <p matLine> --  {{commentForm.get('author').value}} </p>       
+          <h4 matLine> {{commentForm.value.comment}} </h4>
+          <p matLine> {{commentForm.value.rating}} Starts</p>     
+          <p matLine> --  {{commentForm.value.author}} </p>       
       </mat-list-item>
     </mat-list>
     <form novalidate [formGroup]="commentForm" (ngSubmit)="onSubmit()">
@@ -67,7 +67,11 @@
           <button type="submit" matButton class="background-primary text-floral-white" [disabled]="commentForm.invalid">Submit</button>
     </form>
   </div>
-  <div [hidden]="dish">
+  <div [hidden]="dish || errMess">
       <mat-spinner></mat-spinner> <h4>Loading...</h4>
+  </div>
+  <div *ngIf="errMess">
+    <h2>Error</h2>
+    <h4>{{errMess}}</h4>
   </div>
 </div>
