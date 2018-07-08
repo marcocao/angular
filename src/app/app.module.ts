@@ -31,6 +31,10 @@ import { LoginComponent } from './login/login.component';
 import { baseURL } from './shared/baseurl';
 import { ProcessHttpMsgService } from './services/process-http-msg.service'
 
+import { RestangularModule, Restangular } from 'ngx-restangular';
+import { RestangularConfigFactory } from './shared/restConfig';
+import { HighlightDirective } from './directives/highlight.directive';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,7 +45,8 @@ import { ProcessHttpMsgService } from './services/process-http-msg.service'
     HomeComponent,
     AboutComponent,
     ContactComponent,
-    LoginComponent
+    LoginComponent,
+    HighlightDirective
   ],
   imports: [
     BrowserModule,
@@ -54,7 +59,8 @@ import { ProcessHttpMsgService } from './services/process-http-msg.service'
     MatCardModule, MatIconModule, MatProgressSpinnerModule, MatDialogModule,    
     FlexLayoutModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RestangularModule.forRoot(RestangularConfigFactory)
   ],
   providers: [DishService, PromotionService, LeaderService, ProcessHttpMsgService, 
     {provide: 'BaseURL', useValue: baseURL}],

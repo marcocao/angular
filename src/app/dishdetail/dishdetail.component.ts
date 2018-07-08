@@ -7,24 +7,36 @@ import { Dish } from '../shared/dish';
 import { Comment } from '../shared/comment'; 
 import { DishService } from '../services/dish.service';
 
+import { visibility, flyInOut, expand } from '../animations/app.animation';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dishdetail',
   templateUrl: './dishdetail.component.html',
-  styleUrls: ['./dishdetail.component.scss']
+  styleUrls: ['./dishdetail.component.scss'],
+  host: {
+    '[@flyInOut]': 'true',
+    'style': 'display: block;'
+    },
+    animations: [
+      flyInOut(),   
+      visibility(),
+      expand()
+    ]
 })
 export class DishdetailComponent implements OnInit {
   
   commentForm: FormGroup;
   comment: Comment;
   dish: Dish;
+  dishcopy = null;
   dishIds: number[];
   prev: number;
   next: number;
   test: string;
   @ViewChild(FormGroupDirective) commentFormDirective;
   errMess: string;
+  visibility = 'shown';
 
   formErrors = {
     'author': '',
@@ -48,8 +60,8 @@ export class DishdetailComponent implements OnInit {
 
   ngOnInit() {
     this.dishService.getDishIds().subscribe(dishIds => this.dishIds = dishIds);
-    this.route.params.pipe(switchMap((params:Params) => this.dishService.getDish(+params.id)))
-    .subscribe(dish => {this.dish = dish; this.setPrevNext(dish.id);}, errmess => this.errMess = errmess);
+    this.route.params.pipe(switchMap((params:Params) => {this.visibility='hidden'; return this.dishService.getDish(+params.id)}))
+    .subscribe(dish => {this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); this.visibility='shown';}, errmess => this.errMess = errmess);
   }
 
   setPrevNext(dishId: number)
@@ -94,7 +106,8 @@ export class DishdetailComponent implements OnInit {
   onSubmit(){
     this.comment = this.commentForm.value;
     this.comment.date = new Date().toISOString();
-    this.dish.comments.push(this.comment);
+    this.dishcopy.comments.push(this.comment);
+    this.dishcopy.save().subscribe( dish => this.dish = dish);
     console.log(this.comment);
     this.commentForm.reset({
       author: '',
